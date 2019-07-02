@@ -1,2 +1,30 @@
 ---
 # tasks file for apache
+
+- name: install apache
+  yum:
+    name: httpd
+    state: present
+
+- name: create sites dir
+  file:
+    path: {{item}}
+    state: directory
+  with_items: "{{apache_dirs}}"
+
+- name: copy index file
+  template:
+    src: index.html.j2
+    dest: {{apache_docroot}}/index.html
+
+- name: copy apache conf
+  template:
+    src: httpd.conf-{{ansible_os_family}}.j2
+    dest: {{apache_config}}
+  notify: restart apache
+
+- name: start apache
+  service:
+    name: httpd
+    state: started
+    enabled: yes
