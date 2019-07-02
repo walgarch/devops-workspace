@@ -1,7 +1,17 @@
 ---
-- name: install and start apache
+- name: apply common config on all hosts
+  hosts: all
+  remote_user: vagrant
+  become: yes
+
+  role:
+  - common
+
+- name: apply apache and web roles
   hosts: webservers
   remote_user: vagrant
   become: yes
 
-  tasks:
+  roles:
+  - apache
+  - web
